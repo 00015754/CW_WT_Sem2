@@ -1,17 +1,44 @@
 include ../head.pug
 body
     include ../header.pug
-    main
-      h2 Create Event
-      form(action="/create-event", method="POST")
-        label(for="date") Date:
-        input(type="date", id="date", name="date" required)
-        br
-        label(for="location") Location:
-        input(type="text", id="location", name="location" required)
-        br
-        label(for="description") Description:
-        textarea(id="description", name="description" required)
-        br
-        button(type="submit") Create
+    main 
+      .container.mt-5
+      h1 List
+      table.table.table-responsive.table-hover.table-striped.table-dark
+        thead
+          tr
+            th(scope="col") ID
+            th(scope="col") Event DateTime
+            th(scope="col") Location
+            th(scope="col") Description
+        tbody
     include ../footer.pug
+script.
+      document.addEventListener('DOMContentLoaded', function() {
+        axios.get('/api/event')
+          .then(function(response) {
+            const events = response.data;
+            const tableBody = document.querySelector('table tbody');
+            events.forEach(e  => {
+              const row = document.createElement('tr');
+              const event = e.event
+              row.innerHTML = `
+                <td>${e.id}</td>
+                <td>${event.DateTime}</td>
+                <td>${event.Location}</td>
+                <td>${event.Description}</td>
+                <td>
+                  <button class="btn btn-warning btn-sm">Edit</button>
+                  <button class="btn btn-danger btn-sm">Delete</button>
+                </td>
+              `;
+              tableBody.appendChild(row);
+            });
+          })
+          .catch(function(error) {
+            console.log(error);
+          });
+      });
+
+
+    

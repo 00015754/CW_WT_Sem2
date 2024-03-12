@@ -30,6 +30,10 @@ body {
     display: block;
     margin-bottom: 5px;
   }
+
+  a {
+    text-decoration: none;
+  }
   
   form input[type="date"],
   form input[type="text"],
