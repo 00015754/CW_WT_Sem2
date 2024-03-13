@@ -29,7 +29,7 @@ script.
                 <td>${event.Description}</td>
                 <td>
                   <button class="btn btn-warning btn-sm">Edit</button>
-                  <button class="btn btn-danger btn-sm">Delete</button>
+                  <button class="btn btn-danger btn-sm" data-id="${e.id}">Delete</button>
                 </td>
               `;
               tableBody.appendChild(row);
@@ -38,7 +38,22 @@ script.
           .catch(function(error) {
             console.log(error);
           });
-      });
+      
+
+      document.addEventListener('click', async function(event) {
+            if (event.target && event.target.classList.contains('btn-danger')) {
+              const eventId = event.target.getAttribute('data-id');
+              await axios.delete(`/api/event/${eventId}`).then(function(response) {
+                console.log('Delete successful', response);
+                location.reload(true)
+              })
+              .catch(function(error) {
+                console.log('Error deleting event!', error);
+              });
+            }
+          });
+        });
+
 
 
     

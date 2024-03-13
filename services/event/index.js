@@ -2,11 +2,13 @@ const { count } = require('console')
 const fs = require('fs')
 
 const events = require('../../data/db.json')
-console.log(events)
 
 const event_service = {
     getAll() {
         return events
+    },
+    getById(id) {
+        return events.find(e=> e.id == id)
     },
     create(req, res) {
         let new_id = genRanId(4)
@@ -23,10 +25,15 @@ const event_service = {
         whiteToFile(events)
 
         return new_event
+    },
+    delete(id) {
+        const index = events.findIndex(u => u.id == id)
+        events.splice(index, 1)
+        writeToFile(events)
     }
 }
 
-let whiteToFile = async (users) => {
+let writeToFile = async (users) => {
     await
         fs.writeFileSync(
             global.db,
