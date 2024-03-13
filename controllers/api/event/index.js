@@ -16,6 +16,15 @@ const event_controller = {
         } else {
             res.status(404).send('Event not Found!')
         }
+    },
+    update(req, res) {
+        const event = event_service.update(req.params.id, req.body)
+
+        if (event) {
+            res.json(event)
+        } else {
+            res.status(404).send('Event not Found!')
+        }
     }
 }
 

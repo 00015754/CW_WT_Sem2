@@ -1,7 +1,8 @@
 include ../head.pug
 body
     include ../header.pug
-    main 
+    main
+      a.btn.btn-success(href='/add', role='button') Create       
       .container.mt-5
       h1 List
       table.table.table-responsive.table-hover.table-striped.table-dark
@@ -28,7 +29,7 @@ script.
                 <td>${event.Location}</td>
                 <td>${event.Description}</td>
                 <td>
-                  <button class="btn btn-warning btn-sm">Edit</button>
+                  <button class="btn btn-warning btn-sm" data-id="${e.id}" onclick="window.location.href='/update/${e.id}'">Edit</button>
                   <button class="btn btn-danger btn-sm" data-id="${e.id}">Delete</button>
                 </td>
               `;

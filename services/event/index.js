@@ -26,6 +26,21 @@ const event_service = {
 
         return new_event
     },
+
+    update(id) {
+        const eventIndex = events.findIndex( e => e.id == id )
+
+        if (eventIndex === -1) {
+            return null
+        }
+
+        events[eventIndex].event = { ...events[eventIndex].event, ...updateData}
+
+        writeToFile(events)
+
+        return events[eventIndex]
+    },
+
     delete(id) {
         const index = events.findIndex(u => u.id == id)
         events.splice(index, 1)

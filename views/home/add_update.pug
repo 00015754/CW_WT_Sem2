@@ -4,14 +4,68 @@ body
     main 
       h2 Create/Update Event
       form(action="/create-event", method="POST")
-        label(for="date") Date:
-        input(type="date", id="date", name="date" required)
-        br
-        label(for="location") Location:
-        input(type="text", id="location", name="location" required)
-        br
-        label(for="description") Description:
-        textarea(id="description", name="description" required)
-        br
-        button(type="submit", class="btn btn-primary") Create
+      .mb-3
+        label(for="DateTime" class="form-label") Date:
+        .input-group.date(id="datetimepicker1" data-target-input="nearest")
+          input(type="text" class="form-control datetimepicker-input" data-target="#datetimepicker1" id="DateTime" name="DateTime" required)
+          .input-group-append(data-target="#datetimepicker1" data-toggle="datetimepicker")
+            .input-group-text
+              i.fas.fa-calendar-alt
+        //- label(for="DateTime") Date:
+        //- input(type="text", id="DateTime", name="DateTime", class="form control datetimepicker-input", data-target="#datetimepicker1" required)
+        .mb-3
+          label(for="Location") Location:
+          input(type="text", id="Location", name="Location" required)
+        .mb-3
+          label(for="Description") Description:
+          textarea(id="Description", name="Description" required)
+        .mb-3
+          button(type="submit", class="btn btn-success" onclick="submitForm()") #{mode === 'Update' ? 'Update' : 'Add'}
+          span &nbsp;
+          button(type="submit" class="btn btn-secondary" onclick="window.location.href='/'") Cancel
     include ../footer.pug
+
+    script.
+      const format = 'DD/MM/YYYY HH:mm'
+      const picker = new tempusDominus.TempusDominus(document.getElementById('datetimepicker1'),{
+          localization: {
+              'locale': 'fr'
+          }
+      })
+      picker.dates.formatInput = function(date) {
+          return moment(date).format(format)
+      }
+
+      if ("#{mode}" === "Update") {
+        const eventData = !{JSON.stringify(eventData || {})}.event;
+
+        picker.dates.setValue(
+          new tempusDominus.DateTime(moment(eventData.DateTime, format))
+        );
+
+        document.getElementById('Location').value = eventData.Location || '';
+        document.getElementById('Description').value = eventData.Description || '';
+      }
+
+      function submitForm() {
+        const eventData = {
+          DateTime: document.getElementById('DateTime').value,
+          Location: document.getElementById('Location').value,
+          Description: document.getElementById('Description').value,
+        };
+
+        const url = "#{mode}" === "Update" ? `/api/event/${!{JSON.stringify(eventData || {})}.id}` : '/api/event';
+        const method = "#{mode}" === "Update" ? 'put' : 'post';
+
+        axios[method](url, eventData).then(response => {
+          alert('Success!');
+          location.href = '/'
+        })
+        .catch(error => {
+          if(error.response)
+            alert(JSON.stringify(error.response.data.errors))
+          else
+            alert(error)
+        });
+      }
+
